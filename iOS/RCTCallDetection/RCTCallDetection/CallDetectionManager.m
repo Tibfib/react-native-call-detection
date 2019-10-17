@@ -7,6 +7,12 @@
 //
 
 #import "CallDetectionManager.h"
+#import "RNCheckPhoneCallStatus.h"
+#import "React/RCTLog.h"
+#import <AVFoundation/AVAudioSession.h>
+#import<CoreTelephony/CTCallCenter.h>
+#import<CoreTelephony/CTCall.h>
+
 @import CoreTelephony;
 
 typedef void (^CallBack)();
@@ -80,6 +86,27 @@ RCT_EXPORT_METHOD(stopListener) {
     }];
     [self sendEventWithName:@"PhoneCallStateUpdate"
                                                      body:[eventNameMap objectForKey: call.callState]];
+}
+
+/*
+ Taken from https://github.com/torihuang/react-native-check-phone-call-status/blob/master/ios/RNCheckPhoneCallStatus.m, licensed under MIT (see npm package)
+*/
+RCT_EXPORT_METHOD(get:(RCTResponseSenderBlock)callback)
+{
+    NSString *phoneStatus = @"PHONE_OFF";
+    CTCallCenter *ctCallCenter = [[CTCallCenter alloc] init];
+    if (ctCallCenter.currentCalls != nil)
+    {
+        NSArray* currentCalls = [ctCallCenter.currentCalls allObjects];
+        for (CTCall *call in currentCalls)
+        {
+            if(call.callState == CTCallStateConnected)
+            {
+                phoneStatus = @"PHONE_ON";
+            }
+        }
+    }
+    callback(@[[NSNull null], phoneStatus]);
 }
 
 @end
