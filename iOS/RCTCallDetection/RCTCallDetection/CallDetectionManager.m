@@ -7,7 +7,6 @@
 //
 
 #import "CallDetectionManager.h"
-#import "RNCheckPhoneCallStatus.h"
 #import "React/RCTLog.h"
 #import <AVFoundation/AVAudioSession.h>
 #import<CoreTelephony/CTCallCenter.h>
